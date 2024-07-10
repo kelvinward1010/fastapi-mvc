@@ -11,7 +11,9 @@ class Settings(BaseSettings):
     DBUSERNAME: str
     DBPASSWORD: str
     DBNAME: str
+    SECRETKEY: str
     ALGORITHM: str
+    ACCESSTOKENEXPIREMINUTES: int
     
     
     class Config:

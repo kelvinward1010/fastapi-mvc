@@ -1,9 +1,10 @@
-from fastapi import APIRouter, HTTPException, status, Response
+from fastapi import Response
 from bson import ObjectId
 from datetime import datetime
 from ..db import init_db
 from ..utils import init_util
 from ..schemas import user
+from ..security import oauth2
 
 db = init_db.users_collection
 
@@ -27,6 +28,19 @@ async def create_user(user_info):
         "data": converted
     }
 
+async def login_server(id: str, response: Response) -> dict:
+    
+    access_token = oauth2.create_access_token(id)
+    refresh_token = oauth2.create_refresh_token(id)
+    
+    response.set_cookie("access_token", access_token, httponly=True)
+    
+    return {
+        "status": 200,
+        "message": "success",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+    }
 
 
 def Entity(user) -> dict:

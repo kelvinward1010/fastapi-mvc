@@ -12,3 +12,7 @@ class CreateUser(BaseModel):
 class CreateUserFinal(CreateUser):
     createdAt: datetime
     updatedAt: datetime
+    
+class AuthInfo(BaseModel):
+    email: EmailStr
+    password: str
