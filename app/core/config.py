@@ -15,7 +15,6 @@ class Settings(BaseSettings):
     ALGORITHM: str
     ACCESSTOKENEXPIREMINUTES: int
     
-    
     class Config:
         env_file = ".env"
 
