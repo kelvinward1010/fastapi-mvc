@@ -10,27 +10,27 @@ from ..db import init_db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
-SECRET_KEY = settings.SECRETKEY
+SECRETKEY = settings.SECRETKEY
 ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESSTOKENEXPIREMINUTES
+ACCESSTOKENEXPIREMINUTES = settings.ACCESSTOKENEXPIREMINUTES
 
 def create_access_token(id: str) -> str:
     to_encode = {"id": id}
-    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now() + timedelta(minutes=ACCESSTOKENEXPIREMINUTES)
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRETKEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def create_refresh_token(id: str) -> str:
     to_encode = {"id": id}
     expire = datetime.now() + timedelta(days=30)  # Refresh token expires in 30 days
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, SECRETKEY, algorithm=ALGORITHM)
     return encoded_jwt
 
 def verify_access_token(tokenStr: str, credentials_exception) -> token.TokenData:
     try:
-        payload = jwt.decode(tokenStr, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(tokenStr, SECRETKEY, algorithms=[ALGORITHM])
         id: str = payload.get("id")
         if not id:
             raise credentials_exception
@@ -47,7 +47,7 @@ def verify_access_token(tokenStr: str, credentials_exception) -> token.TokenData
 
 def refresh_access_token(refresh_token: str) -> str:
     try:
-        payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(refresh_token, SECRETKEY, algorithms=[ALGORITHM])
         id: str = payload.get("id")
         if not id:
             raise HTTPException(
