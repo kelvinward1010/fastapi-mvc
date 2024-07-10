@@ -7,13 +7,12 @@ from typing import Annotated
 from ..core.config import settings 
 from ..schemas import token, entity
 from ..db import init_db
-from ..utils import init_util 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
-SECRET_KEY: str = settings.SECRETKEY
-ALGORITHM: str = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES: int = settings.ACCESSTOKENEXPIREMINUTES
+SECRET_KEY = settings.SECRETKEY
+ALGORITHM = settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESSTOKENEXPIREMINUTES
 
 def create_access_token(id: str) -> str:
     to_encode = {"id": id}
