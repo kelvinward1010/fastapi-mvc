@@ -13,7 +13,7 @@ router = APIRouter(
     tags=["User"],
 )
 
-@router.get("/user", status_code=status.HTTP_202_ACCEPTED)
+@router.get("/{id}", status_code=status.HTTP_202_ACCEPTED)
 async def get_user(id: str):
     if not id:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
@@ -22,7 +22,7 @@ async def get_user(id: str):
     
     return find_user
 
-@router.put("/change_password", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/change_password/{id}", status_code=status.HTTP_202_ACCEPTED)
 async def change_password(id, infoChange: user_schema.UserChangePassword, user: dict = Depends(oauth2.get_current_user)):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
