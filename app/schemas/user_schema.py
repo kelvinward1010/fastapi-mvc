@@ -16,3 +16,8 @@ class CreateUserFinal(CreateUser):
 class AuthInfo(BaseModel):
     email: EmailStr
     password: str
+
+class UserChangePassword(BaseModel):
+    email: EmailStr
+    old_password: str
+    password: str

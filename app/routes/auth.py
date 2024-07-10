@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Response
 from ..db import init_db
-from ..schemas import user
+from ..schemas import user_schema
 from ..utils import init_util
 from ..services.auth import create_user, login_server
 from ..security.oauth2 import refresh_access_token
@@ -13,7 +13,7 @@ router = APIRouter(
 )
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
-async def register(payload: user.CreateUser):
+async def register(payload: user_schema.CreateUser):
     userinfo = payload.model_dump()
     if not userinfo['name'] or not userinfo['email'] or not userinfo['password']:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
@@ -29,7 +29,7 @@ async def register(payload: user.CreateUser):
 
 
 @router.post('/login', status_code=status.HTTP_200_OK)
-async def login(payload: user.AuthInfo, response: Response):
+async def login(payload: user_schema.AuthInfo, response: Response):
     user_info = payload.model_dump()
     if not user_info['email'] or not user_info['password']:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
@@ -45,7 +45,7 @@ async def login(payload: user.AuthInfo, response: Response):
     if not init_util.verify(user_info['password'], hashed_password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Password!")
     
-    loginSV = await login_server(hashed_password, response=response)
+    loginSV = await login_server(str(exist_account.get('_id')), response=response)
     return loginSV
 
 

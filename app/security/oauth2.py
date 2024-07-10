@@ -5,8 +5,9 @@ from fastapi.security import OAuth2PasswordBearer
 from bson import ObjectId
 from typing import Annotated
 from ..core.config import settings 
-from ..schemas import token
+from ..schemas import token, entity
 from ..db import init_db
+from ..utils import init_util 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/login')
 
@@ -28,11 +29,10 @@ def create_refresh_token(id: str) -> str:
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def verify_access_token(tokenStr: str, credentials_exception) -> token.AccessToken:
+def verify_access_token(tokenStr: str, credentials_exception) -> token.TokenData:
     try:
         payload = jwt.decode(tokenStr, SECRET_KEY, algorithms=[ALGORITHM])
         id: str = payload.get("id")
-        print(id)
         if not id:
             raise credentials_exception
         token_data = token.TokenData(id=str(id))
@@ -67,6 +67,7 @@ def refresh_access_token(refresh_token: str) -> str:
         )
 
 async def get_current_user(tokenStr: Annotated[str, Depends(oauth2_scheme)]):
+    
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail=f"Could not validate credentials",
@@ -74,7 +75,6 @@ async def get_current_user(tokenStr: Annotated[str, Depends(oauth2_scheme)]):
     )
     
     token_data = verify_access_token(tokenStr, credentials_exception)
+    user = init_db.users_collection.find_one({"_id": ObjectId(token_data.id)})
     
-    user = init_db.users_collection.find_one({"_id": ObjectId(token_data['id'])})
-    
-    return user
+    return entity.EntityUser(user)
