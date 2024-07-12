@@ -1,10 +1,9 @@
-from fastapi import APIRouter, HTTPException, status, Response, Depends
+from fastapi import APIRouter, HTTPException, status, Depends
 from bson import ObjectId
 from ..db import init_db
 from ..schemas import post_schema, entity
 from ..services import post_service
 from ..security import oauth2
-from ..utils import init_util
 
 db = init_db.posts_collection
 
@@ -81,9 +80,9 @@ async def update_post(id, user: dict = Depends(oauth2.get_current_user)):
     if not id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing ID post!")
     
-    find_post = db.find_one_and_delete({"_id": ObjectId(id)})
+    find_post_to_delete = db.find_one_and_delete({"_id": ObjectId(id)})
 
-    if not find_post:
+    if not find_post_to_delete:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found post to delete!")
     
     return {

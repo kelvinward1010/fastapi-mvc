@@ -2,7 +2,6 @@ from fastapi import HTTPException, status
 from bson import ObjectId
 from datetime import datetime
 from ..db import init_db
-from ..utils import init_util
 from ..schemas import entity, post_schema
 
 
@@ -55,10 +54,10 @@ async def get_post_follow_id(id: str) -> dict:
         "data": item
     }
     
-async def change_post(id,infoChange) -> dict:
+async def change_post(id, infoChange) -> dict:
     
     db.find_one_and_update({"_id": ObjectId(id)}, {
-        "$set": dict(infoChange)
+        "$set": dict(infoChange, updatedAt=datetime.now())
     })
     
     post_after_update = db.find_one({"_id": ObjectId(id)})
