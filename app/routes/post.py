@@ -70,3 +70,23 @@ async def update_post(id, infoChange: post_schema.UpdatePostModel, user: dict = 
     post_updated = await post_service.change_post(id, infoChange)
     
     return post_updated
+
+
+@router.delete("/delete/{id}")
+async def update_post(id, user: dict = Depends(oauth2.get_current_user)):
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
+    
+    if not id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing ID post!")
+    
+    find_post = db.find_one_and_delete({"_id": ObjectId(id)})
+
+    if not find_post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found post to delete!")
+    
+    return {
+        "status": 200,
+        "message": "success"
+    }
