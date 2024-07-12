@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Response, Depends
+from fastapi import APIRouter, HTTPException, status, Depends
 from bson import ObjectId
 from ..db import init_db
 from ..schemas import user_schema
@@ -13,7 +13,7 @@ router = APIRouter(
     tags=["User"],
 )
 
-@router.get("/{id}", status_code=status.HTTP_202_ACCEPTED)
+@router.get("/{id}", status_code=status.HTTP_200_OK)
 async def get_user(id: str):
     if not id:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
@@ -22,7 +22,7 @@ async def get_user(id: str):
     
     return find_user
 
-@router.put("/change_password/{id}", status_code=status.HTTP_202_ACCEPTED)
+@router.put("/change_password/{id}", status_code=status.HTTP_200_OK)
 async def change_password(id, infoChange: user_schema.UserChangePassword, user: dict = Depends(oauth2.get_current_user)):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
@@ -39,3 +39,19 @@ async def change_password(id, infoChange: user_schema.UserChangePassword, user: 
     
     changed_password = await user_service.change_password_service(id, infoChange.password) 
     return changed_password
+
+
+@router.put("/update_user/{id}", status_code=status.HTTP_202_ACCEPTED)
+async def update_user(id, infoChange: user_schema.UserUpdate, user: dict = Depends(oauth2.get_current_user)):
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
+    
+    if not id or not infoChange:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+    
+    update = await user_service.change_user(id,infoChange)
+    
+    return update
+    
+    

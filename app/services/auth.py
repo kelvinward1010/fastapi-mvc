@@ -16,9 +16,9 @@ async def create_user(user_info):
     data_to_create = user_schema.CreateUserFinal(**user_info, createdAt=datetime.now(), updatedAt=datetime.now())
     
     if hashed_password:
-        create_user = db.insert_one(dict(data_to_create))
+        created_user = db.insert_one(dict(data_to_create))
         
-    user_created = db.find_one({"_id": ObjectId(create_user.inserted_id)})
+    user_created = db.find_one({"_id": ObjectId(created_user.inserted_id)})
     
     converted = entity.EntityUser(user_created)
     
