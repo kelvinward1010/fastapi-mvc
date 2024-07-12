@@ -13,3 +13,15 @@ class CreatePostModel(BaseModel):
 class CreatePostModelFinal(CreatePostModel):
     createdAt: datetime
     updatedAt: datetime
+    
+class SearchModel(BaseModel):
+    topic: list[str] = None 
+    title: str = None
+    
+class UpdatePostModel(BaseModel):
+    topic: list[str]
+    title: str
+    authorID: str | int
+    content: str
+    description: str
+    image_thumbnail: str

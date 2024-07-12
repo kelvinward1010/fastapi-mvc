@@ -24,3 +24,6 @@ def EntityPost(post) -> dict:
         "createdAt": post["createdAt"],
         "updatedAt": post["updatedAt"],
     }
+    
+def EntinyListPost(posts) -> list:
+    return [EntityPost(post) for post in posts]
