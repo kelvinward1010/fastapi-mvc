@@ -16,7 +16,7 @@ router = APIRouter(
 async def register(payload: user_schema.CreateUser):
     userinfo = payload.model_dump()
     if not userinfo['name'] or not userinfo['email'] or not userinfo['password']:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     exist_email = db.find_one({"email": userinfo["email"]})
     if exist_email:
@@ -32,7 +32,7 @@ async def register(payload: user_schema.CreateUser):
 async def login(payload: user_schema.AuthInfo, response: Response):
     user_info = payload.model_dump()
     if not user_info['email'] or not user_info['password']:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     exist_account = db.find_one({"email": user_info["email"]})
     if not exist_account:

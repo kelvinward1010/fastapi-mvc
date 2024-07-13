@@ -36,7 +36,7 @@ async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depe
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
     if not infoPost['authorID'] or not infoPost["title"] or not infoPost['description'] or not infoPost['content']:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     newPost = await post_service.create_post(infoPost)
     
@@ -59,7 +59,7 @@ async def update_post(id, infoChange: post_schema.UpdatePostModel, user: dict = 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
     if not infoPost['authorID'] or not infoPost["title"] or not infoPost['description'] or not infoPost['content']:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     find_post = db.find_one({"_id": ObjectId(id)})
 

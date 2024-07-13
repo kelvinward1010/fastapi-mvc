@@ -16,7 +16,7 @@ router = APIRouter(
 @router.get("/{id}", status_code=status.HTTP_200_OK)
 async def get_user(id: str):
     if not id:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     find_user = await user_service.find_user(id)
     
@@ -28,7 +28,7 @@ async def change_password(id, infoChange: user_schema.UserChangePassword, user: 
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
     if not id or not infoChange:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     user_exist = db.find_one({"_id": ObjectId(id)})
     
@@ -48,7 +48,7 @@ async def update_user(id, infoChange: user_schema.UserUpdate, user: dict = Depen
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
     if not id or not infoChange:
-        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="You need to provide all required information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     update = await user_service.change_user(id,infoChange)
     
