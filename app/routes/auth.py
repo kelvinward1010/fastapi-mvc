@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status, Response
 from ..db import init_db
-from ..schemas import user_schema
+from ..schemas import user_schema, token
 from ..utils import init_util
 from ..services.auth import create_user, login_server
 from ..security.oauth2 import refresh_access_token
@@ -50,11 +50,12 @@ async def login(payload: user_schema.AuthInfo, response: Response):
 
 
 @router.post('/refresh-token', status_code=status.HTTP_200_OK)
-async def refresh_token(refreshtokenStr: str, response: Response):
-    if not refreshtokenStr:
+async def refresh_token(refreshtokenStr: token.RefreshToken, response: Response):
+    refreshtoken = refreshtokenStr.model_dump()
+    if not refreshtoken['refresh_token']:
         return {"error": "Refresh token is missing."}
 
-    new_access_token = refresh_access_token(refreshtokenStr)
+    new_access_token = refresh_access_token(refreshtoken['refresh_token'])
     
     response.set_cookie("access_token", new_access_token, httponly=True)
     
