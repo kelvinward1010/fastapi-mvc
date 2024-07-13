@@ -28,7 +28,7 @@ async def create_user(user_info):
         "data": converted
     }
 
-async def login_server(id: str, response: Response) -> dict:
+async def login_server(id: str,user, response: Response) -> dict:
     
     access_token = oauth2.create_access_token(id)
     refresh_token = oauth2.create_refresh_token(id)
@@ -38,6 +38,7 @@ async def login_server(id: str, response: Response) -> dict:
     return {
         "status": 200,
         "message": "success",
+        "user": entity.EntityUser(user),
         "access_token": access_token,
         "refresh_token": refresh_token,
     }

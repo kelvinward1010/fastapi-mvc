@@ -45,7 +45,7 @@ async def login(payload: user_schema.AuthInfo, response: Response):
     if not init_util.verify(user_info['password'], hashed_password):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=f"Invalid Password!")
     
-    loginSV = await login_server(str(exist_account.get('_id')), response=response)
+    loginSV = await login_server(str(exist_account.get('_id')), user=exist_account, response=response)
     return loginSV
 
 
