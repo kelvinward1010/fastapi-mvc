@@ -12,22 +12,22 @@ router = APIRouter(
     tags=["Post"],
 )
 
-@router.get("/all_posts")
+@router.get("/all-posts")
 async def get_all_posts():
     posts = entity.EntinyListPost(db.find())
     return posts
 
-@router.get("/search_post")
+@router.get("/search-post")
 async def get_search_posts(query: post_schema.SearchModel):
     postsfinal = await post_service.search_post_service(query.title, query.topic)
     return postsfinal
 
-@router.get("/newest_posts")
+@router.get("/newest-posts")
 async def get_newest_posts(count: int):
     newest_posts = entity.EntinyListPost(db.find().sort("createdAt", -1).limit(count))
     return newest_posts
 
-@router.post("/create_post", status_code=status.HTTP_201_CREATED)
+@router.post("/create-post", status_code=status.HTTP_201_CREATED)
 async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depends(oauth2.get_current_user)):
     
     infoPost = infoCreate.model_dump()

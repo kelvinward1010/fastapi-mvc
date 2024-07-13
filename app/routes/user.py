@@ -22,7 +22,7 @@ async def get_user(id: str):
     
     return find_user
 
-@router.put("/change_password/{id}", status_code=status.HTTP_200_OK)
+@router.put("/change-password/{id}", status_code=status.HTTP_200_OK)
 async def change_password(id, infoChange: user_schema.UserChangePassword, user: dict = Depends(oauth2.get_current_user)):
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
@@ -41,7 +41,7 @@ async def change_password(id, infoChange: user_schema.UserChangePassword, user: 
     return changed_password
 
 
-@router.put("/update_user/{id}", status_code=status.HTTP_200_OK)
+@router.put("/update-user/{id}", status_code=status.HTTP_200_OK)
 async def update_user(id, infoChange: user_schema.UserUpdate, user: dict = Depends(oauth2.get_current_user)):
     
     if not user:
