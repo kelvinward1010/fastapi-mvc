@@ -58,9 +58,18 @@ async def refresh_token(refreshtokenStr: str, response: Response):
     
     response.set_cookie("access_token", new_access_token, httponly=True)
     
-    return {"message": "Access token refreshed!"}
+    return {
+        "status": 200,
+        "message": "success",
+        "data": {
+            "token": new_access_token
+        }
+    }
 
 @router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("access_token")
-    return {"message": "Logged out successfully"}
+    return {
+        "status": 200,
+        "message": "success",
+    }
