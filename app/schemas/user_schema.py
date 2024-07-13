@@ -25,4 +25,5 @@ class UserChangePassword(BaseModel):
 class UserUpdate(BaseModel):
     name: str
     email: EmailStr
-    image: str
+    image: str | None = None
+    position: str | None = None
