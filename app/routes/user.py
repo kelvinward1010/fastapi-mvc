@@ -15,6 +15,11 @@ router = APIRouter(
 
 @router.get("/{id}", status_code=status.HTTP_200_OK)
 async def get_user(id: str):
+    try:
+        ObjectId(id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid user id")
+    
     if not id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     

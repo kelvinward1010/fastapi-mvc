@@ -44,6 +44,11 @@ async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depe
 
 @router.get("/{id}")
 async def find_post(id: str):
+    try:
+        ObjectId(id)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail="Invalid post id")
+    
     if not id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing id!")
     
