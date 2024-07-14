@@ -12,6 +12,9 @@ def EntityUser(user) -> dict:
         "updatedAt": user["updatedAt"],
     }
     
+def EntinyListUser(users) -> list:
+    return [EntityUser(user) for user in users]
+    
 def EntityPost(post) -> dict:
     return {
         "_id": str(post["_id"]),
