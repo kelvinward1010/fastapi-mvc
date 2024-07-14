@@ -18,7 +18,6 @@ class AuthInfo(BaseModel):
     password: str
 
 class UserChangePassword(BaseModel):
-    email: EmailStr
     old_password: str
     password: str
     
