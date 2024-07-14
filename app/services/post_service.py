@@ -42,16 +42,16 @@ async def create_post(infoCreate) -> dict:
         "data": converted
     }
     
-async def get_post_follow_id(id: str) -> dict:
+async def get_postId(id) -> dict:
     
-    item = db.find_one({"_id": ObjectId(id)})
-    if not item:
+    data_post = db.find_one({"_id": ObjectId(id)})
+    if not data_post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found post with id: {id}")
     
     return {
         "status": 200,
         "message": "success",
-        "data": item
+        "data": entity.EntityPost(data_post)
     }
     
 async def change_post(id, infoChange) -> dict:

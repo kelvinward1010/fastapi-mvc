@@ -43,11 +43,11 @@ async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depe
     return newPost
 
 @router.get("/{id}")
-async def find_post(id):
+async def find_post(id: str):
     if not id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Missing id!")
     
-    post = await post_service.get_post_follow_id(id)
+    post = await post_service.get_postId(id)
     return post
 
 @router.put("/update/{id}")
