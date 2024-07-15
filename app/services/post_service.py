@@ -28,25 +28,6 @@ async def search_posts_service(title, topic, limit, neworold) -> dict:
         "data": posts
     }
 
-async def search_posts_on_modal_service(title, topic) -> dict:
-    query = {}
-    if title or topic:
-        query["$or"] = []
-        if title:
-            query["$or"].append({"title": {"$regex": title, "$options": "i"}})
-        if topic:
-            query["$or"].append({"topic": {"$in": topic}})
-    
-    searched_posts = db.find(query).limit(30)
-    
-    posts = entity.EntinyListPost(list(searched_posts))
-    
-    return {
-        "status": 200,
-        "message": "success",
-        "data": posts
-    }
-
 
 async def create_post(infoCreate) -> dict:
     

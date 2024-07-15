@@ -26,11 +26,6 @@ async def search_posts(query: post_schema.SearchPostsModel):
     postsfinal = await post_service.search_posts_service(query.title, query.topic, query.limit, query.neworold)
     return postsfinal
 
-@router.post("/search-posts-on-modal")
-async def search_posts_on_modal(query: post_schema.SearchPostsOnModalModel):
-    postsfinal = await post_service.search_posts_on_modal_service(query.title, query.topic)
-    return postsfinal
-
 @router.get("/newest-posts")
 async def get_newest_posts(count: int):
     newest_posts = entity.EntinyListPost(db.find().sort("createdAt", -1).limit(count))

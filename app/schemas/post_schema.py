@@ -20,10 +20,6 @@ class SearchPostsModel(BaseModel):
     limit: int = None
     neworold: int = None
 
-class SearchPostsOnModalModel(BaseModel):
-    topic: list[str] = None 
-    title: str = None
-    
 class UpdatePostModel(BaseModel):
     topic: list[str]
     title: str
