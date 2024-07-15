@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, HTTPException, status, Depends, Query
 from bson import ObjectId
 from ..db import init_db
 from ..schemas import post_schema, entity
@@ -17,13 +17,14 @@ async def get_all_posts():
     posts = entity.EntinyListPost(db.find())
     return posts
 
-@router.post("/search-posts")
-async def search_posts(query: post_schema.SearchPostsModel):
-    if not query.limit:
-        query.limit = 0
-    if not query.neworold:
-        query.neworold = -1
-    postsfinal = await post_service.search_posts_service(query.title, query.topic, query.limit, query.neworold)
+@router.get("/search-posts")
+async def search_posts(topic: list = Query(default=None), title: str = None, limit: int = None, neworold: int = None):
+    
+    if not limit:
+        limit = 0
+    if not neworold:
+        neworold = -1
+    postsfinal = await post_service.search_posts_service(title, topic, limit, neworold)
     return postsfinal
 
 @router.get("/newest-posts")
