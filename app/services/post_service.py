@@ -18,7 +18,7 @@ async def search_posts_service(title, topic, limit, neworold) -> dict:
         if topic:
             query["$or"].append({"topic": {"$in": topic}})
     
-    searched_posts = db.find(query).limit(limit).sort("createdAt", neworold)
+    searched_posts = db.find(query).limit(int(limit)).sort("createdAt", int(neworold))
     
     posts = entity.EntinyListPost(list(searched_posts))
     
