@@ -17,7 +17,7 @@ async def get_all_posts():
     posts = entity.EntinyListPost(db.find())
     return posts
 
-@router.get("/search-post")
+@router.post("/search-post")
 async def get_search_posts(query: post_schema.SearchModel):
     postsfinal = await post_service.search_post_service(query.title, query.topic)
     return postsfinal
