@@ -14,7 +14,13 @@ class CreatePostModelFinal(CreatePostModel):
     createdAt: datetime
     updatedAt: datetime
     
-class SearchModel(BaseModel):
+class SearchPostsModel(BaseModel):
+    topic: list[str] = None 
+    title: str = None
+    limit: int = None
+    neworold: int = None
+
+class SearchPostsOnModalModel(BaseModel):
     topic: list[str] = None 
     title: str = None
     

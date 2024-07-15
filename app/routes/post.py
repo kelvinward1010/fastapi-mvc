@@ -17,9 +17,18 @@ async def get_all_posts():
     posts = entity.EntinyListPost(db.find())
     return posts
 
-@router.post("/search-post")
-async def get_search_posts(query: post_schema.SearchModel):
-    postsfinal = await post_service.search_post_service(query.title, query.topic)
+@router.post("/search-posts")
+async def search_posts(query: post_schema.SearchPostsModel):
+    if not query.limit:
+        query.limit = 0
+    if not query.neworold:
+        query.neworold = -1
+    postsfinal = await post_service.search_posts_service(query.title, query.topic, query.limit, query.neworold)
+    return postsfinal
+
+@router.post("/search-posts-on-modal")
+async def search_posts_on_modal(query: post_schema.SearchPostsOnModalModel):
+    postsfinal = await post_service.search_posts_on_modal_service(query.title, query.topic)
     return postsfinal
 
 @router.get("/newest-posts")
@@ -35,7 +44,7 @@ async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depe
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
-    if not infoPost['authorID'] or not infoPost["title"] or not infoPost['description'] or not infoPost['content']:
+    if not (infoPost['authorID'] or infoPost["title"] or infoPost['description'] or infoPost['content']):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     newPost = await post_service.create_post(infoPost)
