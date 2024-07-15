@@ -18,13 +18,13 @@ async def get_all_posts():
     return posts
 
 @router.get("/search-posts")
-async def search_posts(topic: list = Query(default=None), title: str = None, limit: int = None, neworold: int = None):
+async def search_posts(topic: list = Query(default=None), title: str = None, limit: str | int = None, neworold: str | int = None):
     
-    if not limit:
+    if not limit or limit is None:
         limit = 0
-    if not neworold:
+    if not neworold or neworold is None:
         neworold = -1
-    postsfinal = await post_service.search_posts_service(title, topic, limit, neworold)
+    postsfinal = await post_service.search_posts_service(title, topic, int(limit), int(neworold))
     return postsfinal
 
 @router.get("/newest-posts")
