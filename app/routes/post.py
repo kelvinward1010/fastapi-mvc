@@ -27,10 +27,16 @@ async def search_posts(topic: list = Query(default=None), title: str = None, lim
     postsfinal = await post_service.search_posts_service(title, topic, int(limit), int(neworold))
     return postsfinal
 
-@router.get("/newest-posts")
-async def get_newest_posts(count: int):
-    newest_posts = entity.EntinyListPost(db.find().sort("createdAt", -1).limit(count))
-    return newest_posts
+@router.get("/newest-posts-search")
+async def topics_search(topic: list = Query(default=None), limit: str | int = None, neworold: str | int = None):
+    
+    if not limit or limit is None:
+        limit = 20
+    if not neworold or neworold is None:
+        neworold = -1
+    
+    topics_searched = await post_service.search_topics_posts(topic, limit, neworold)
+    return topics_searched
 
 @router.post("/create-post", status_code=status.HTTP_201_CREATED)
 async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depends(oauth2.get_current_user)):

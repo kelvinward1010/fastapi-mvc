@@ -28,6 +28,22 @@ async def search_posts_service(title, topic, limit, neworold) -> dict:
         "data": posts
     }
 
+async def search_topics_posts(topic, limit, neworold) -> dict:
+    query = {}
+    if topic:
+        query["$or"] = []
+        query["$or"].append({"topic": {"$in": topic}})
+        
+    searched_posts = db.find(query).limit(int(limit)).sort("createdAt", neworold)
+    
+    posts = entity.EntinyListPost(list(searched_posts))
+    
+    return {
+        "status": 200,
+        "message": "success",
+        "data": posts
+    }
+
 
 async def create_post(infoCreate) -> dict:
     
