@@ -44,6 +44,23 @@ async def search_topics_posts(topic, limit, neworold) -> dict:
         "data": posts
     }
 
+async def search_your_posts(id, title) -> dict:
+    query = {}
+    if title:
+        query["$or"] = []
+        query["$or"].append({"title": {"$regex": title, "$options": "i"}})
+    if id:
+        query["authorID"] = id
+        
+    searched_posts = db.find(query).sort("createdAt", -1)
+    
+    posts = entity.EntinyListPost(list(searched_posts))
+    
+    return {
+        "status": 200,
+        "message": "success",
+        "data": posts
+    }
 
 async def create_post(infoCreate) -> dict:
     
@@ -86,3 +103,40 @@ async def change_post(id, infoChange) -> dict:
         "message": "success",
         "data": entity.EntityPost(post_after_update)
     }
+    
+async def like_post_service(id, user_id, like, post):
+    
+    likes_in_post: list = post['likes']
+    isReadyLike = False
+    for i in likes_in_post:
+        if str(i) == str(user_id):
+            isReadyLike = True
+        else:
+            isReadyLike = False
+    
+    if like.isLike == 1:
+        if isReadyLike == True:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"You're already like this post!")
+        likes_in_post.append(user_id)
+        db.find_one_and_update({"_id": ObjectId(id)},{
+            "$set": dict(post)
+        })
+        return {
+            "status": 200,
+            "message": "success",
+            "data": entity.EntityPost(post)
+        }
+        
+    if like.isLike == 0:
+        if isReadyLike == False:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"You're already like this post!")
+        likes_in_post.remove(user_id)
+        db.find_one_and_update({"_id": ObjectId(id)},{
+            "$set": dict(post)
+        })
+        return {
+            "status": 200,
+            "message": "success",
+            "data": entity.EntityPost(post)
+        }   
+    

@@ -24,6 +24,7 @@ def EntityPost(post) -> dict:
         "content": post["content"],
         "description": post["description"],
         "image_thumbnail": post["image_thumbnail"],
+        "likes": post["likes"],
         "createdAt": post["createdAt"],
         "updatedAt": post["updatedAt"],
     }

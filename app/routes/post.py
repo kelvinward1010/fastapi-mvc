@@ -38,6 +38,15 @@ async def topics_search(topic: list = Query(default=None), limit: str | int = No
     topics_searched = await post_service.search_topics_posts(topic, limit, neworold)
     return topics_searched
 
+@router.get("/your-posts/{id}")
+async def your_posts(id, title: str = None, user: dict = Depends(oauth2.get_current_user)):
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
+    
+    posts_searched = await post_service.search_your_posts(id, title)
+    return posts_searched
+
 @router.post("/create-post", status_code=status.HTTP_201_CREATED)
 async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depends(oauth2.get_current_user)):
     
@@ -46,7 +55,7 @@ async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depe
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
-    if not (infoPost['authorID'] or infoPost["title"] or infoPost['description'] or infoPost['content']):
+    if not (infoPost['authorID'] or infoPost["title"] or infoPost['description'] or infoPost['content'] or infoPost['likes']):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="You need to provide all required information!")
     
     newPost = await post_service.create_post(infoPost)
@@ -105,3 +114,21 @@ async def update_post(id, user: dict = Depends(oauth2.get_current_user)):
         "status": 200,
         "message": "success"
     }
+    
+@router.put("/like/{id}", status_code=status.HTTP_200_OK)
+async def like_post(id, like: post_schema.Like, user: dict = Depends(oauth2.get_current_user)):
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
+    
+    id_user = user["_id"]
+    
+    post = db.find_one({"_id": ObjectId(id)})
+    
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found!")
+    
+    liked = await post_service.like_post_service(id, id_user, like, post)
+    return liked
+    
+    

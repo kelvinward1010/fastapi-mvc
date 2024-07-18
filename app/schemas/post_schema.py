@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+from typing import Literal
 
 class CreatePostModel(BaseModel):
     topic: list[str]
@@ -9,6 +9,7 @@ class CreatePostModel(BaseModel):
     content: str
     description: str
     image_thumbnail: str
+    likes: list[str]
     
 class CreatePostModelFinal(CreatePostModel):
     createdAt: datetime
@@ -27,3 +28,7 @@ class UpdatePostModel(BaseModel):
     content: str
     description: str
     image_thumbnail: str
+    likes: list[str]
+    
+class Like(BaseModel):
+    isLike: Literal[0,1]
