@@ -8,6 +8,7 @@ def EntityUser(user) -> dict:
         "password": user["password"],
         "image": user["image"],
         "position": user["position"],
+        "favoritesposts": user["favoritesposts"],
         "createdAt": user["createdAt"],
         "updatedAt": user["updatedAt"],
     }

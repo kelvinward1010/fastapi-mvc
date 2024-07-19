@@ -7,6 +7,7 @@ from ..schemas import entity, post_schema
 
 
 db = init_db.posts_collection
+dbuser = init_db.users_collection
 
 async def search_posts_service(title, topic, limit, neworold) -> dict:
     
@@ -62,6 +63,16 @@ async def search_your_posts(id, title) -> dict:
         "data": posts
     }
 
+async def your_posts_favorites(ids_posts) -> dict:
+    
+    posts_favorites = entity.EntinyListPost(db.find_one({"_id": ObjectId(id_post)}) for id_post in ids_posts)
+    
+    return {
+        "status": 200,
+        "message": "success",
+        "data": posts_favorites
+    }
+
 async def create_post(infoCreate) -> dict:
     
     data_to_create = post_schema.CreatePostModelFinal(**infoCreate, createdAt=datetime.now(), updatedAt=datetime.now())
@@ -104,12 +115,15 @@ async def change_post(id, infoChange) -> dict:
         "data": entity.EntityPost(post_after_update)
     }
     
-async def like_post_service(id, user_id, like, post):
+async def like_post_service(id, user, like, post):
+    
+    id_user = user["_id"]
+    favoritesposts: list = user['favoritesposts']
     
     likes_in_post: list = post['likes']
     isReadyLike = False
     for i in likes_in_post:
-        if str(i) == str(user_id):
+        if str(i) == str(id_user):
             isReadyLike = True
         else:
             isReadyLike = False
@@ -117,10 +131,12 @@ async def like_post_service(id, user_id, like, post):
     if like.isLike == 1:
         if isReadyLike == True:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"You're already like this post!")
-        likes_in_post.append(user_id)
-        db.find_one_and_update({"_id": ObjectId(id)},{
-            "$set": dict(post)
-        })
+        
+        favoritesposts.append(id)
+        likes_in_post.append(id_user)
+        db.find_one_and_update({"_id": ObjectId(id)},{"$set": dict(post)})
+        dbuser.find_one_and_update({"_id": ObjectId(id_user)},{"$set": {"favoritesposts": favoritesposts}})
+        
         return {
             "status": 200,
             "message": "success",
@@ -129,11 +145,13 @@ async def like_post_service(id, user_id, like, post):
         
     if like.isLike == 0:
         if isReadyLike == False:
-            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"You're already like this post!")
-        likes_in_post.remove(user_id)
-        db.find_one_and_update({"_id": ObjectId(id)},{
-            "$set": dict(post)
-        })
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail=f"You haven't liked this post!")
+        
+        favoritesposts.remove(id)
+        likes_in_post.remove(id_user)
+        db.find_one_and_update({"_id": ObjectId(id)},{"$set": dict(post)})
+        dbuser.find_one_and_update({"_id": ObjectId(id_user)},{"$set": {"favoritesposts": favoritesposts}})
+        
         return {
             "status": 200,
             "message": "success",

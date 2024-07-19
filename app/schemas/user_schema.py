@@ -8,6 +8,7 @@ class CreateUser(BaseModel):
     password: str
     image: str | None = None
     position: str | None = None
+    favoritesposts: list[str] | None = None
 
 class CreateUserFinal(CreateUser):
     createdAt: datetime
@@ -26,3 +27,5 @@ class UserUpdate(BaseModel):
     email: EmailStr
     image: str | None = None
     position: str | None = None
+    favoritesposts: list[str] | None = None
+    

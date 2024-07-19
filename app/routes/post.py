@@ -47,6 +47,17 @@ async def your_posts(id, title: str = None, user: dict = Depends(oauth2.get_curr
     posts_searched = await post_service.search_your_posts(id, title)
     return posts_searched
 
+@router.get("/your-posts-favorites", status_code=status.HTTP_200_OK)
+async def your_posts_favorites(user: dict = Depends(oauth2.get_current_user)):
+    
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
+    
+    favorites_posts: list = user['favoritesposts']
+    
+    ids_posts = await post_service.your_posts_favorites(favorites_posts)
+    return ids_posts
+
 @router.post("/create-post", status_code=status.HTTP_201_CREATED)
 async def create_post(infoCreate: post_schema.CreatePostModel, user: dict = Depends(oauth2.get_current_user)):
     
@@ -121,14 +132,11 @@ async def like_post(id, like: post_schema.Like, user: dict = Depends(oauth2.get_
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticate!")
     
-    id_user = user["_id"]
-    
     post = db.find_one({"_id": ObjectId(id)})
     
     if not post:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Not found!")
     
-    liked = await post_service.like_post_service(id, id_user, like, post)
+    liked = await post_service.like_post_service(id, user, like, post)
     return liked
-    
     
