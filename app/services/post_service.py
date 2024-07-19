@@ -114,6 +114,40 @@ async def change_post(id, infoChange) -> dict:
         "message": "success",
         "data": entity.EntityPost(post_after_update)
     }
+
+async def delete_post_service(post, user):
+    
+    post_id = post["_id"]
+    id_user = user["_id"]
+    favoritesposts: list = user['favoritesposts']
+    
+    isReadyLike = False
+    for i in favoritesposts:
+        if str(i) == str(post_id):
+            isReadyLike = True
+        else:
+            isReadyLike = False
+    
+    if isReadyLike == True:
+    
+        db.find_one_and_delete({"_id": ObjectId(post_id)})
+        
+        favoritesposts.remove(str(post_id))
+        dbuser.find_one_and_update({"_id": ObjectId(id_user)},{"$set": {"favoritesposts": favoritesposts}})
+        
+        return {
+            "status": 200,
+            "message": "success",
+        }   
+
+    if isReadyLike == False:
+        db.find_one_and_delete({"_id": ObjectId(post_id)})
+        
+        return {
+            "status": 200,
+            "message": "success",
+        }   
+
     
 async def like_post_service(id, user, like, post):
     
