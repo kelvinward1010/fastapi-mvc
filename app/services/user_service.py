@@ -38,8 +38,14 @@ async def change_password_service(id, password: str) -> dict:
     
 async def change_user(id,infoChange) -> dict:
     
+    carfdata = {
+        "name": infoChange.name,
+        "email": infoChange.email,
+        "image": infoChange.image,
+        "position": infoChange.position,
+    }
     db.find_one_and_update({"_id": ObjectId(id)}, {
-        "$set": dict(infoChange, updatedAt=datetime.now())
+        "$set": dict(carfdata, updatedAt=datetime.now())
     })
     
     user_after_update = db.find_one({"_id": ObjectId(id)})
