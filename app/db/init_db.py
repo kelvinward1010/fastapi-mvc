@@ -21,6 +21,7 @@ def connect_to_mongodb():
 db = connect[settings.DBNAME]
 users_collection = db['users']
 posts_collection = db['posts']
+files_collection = db['files']
 
 async def connect_db():
     """Connect to MongoDB"""

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from .core.config import settings
 from .db import init_db
-from .routes import auth, user, post
+from .routes import auth, user, post, file
 
 
 
@@ -40,6 +40,7 @@ app.add_event_handler("shutdown", init_db.close_db)
 app.include_router(auth.router)
 app.include_router(user.router)
 app.include_router(post.router)
+app.include_router(file.router)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host=settings.APP_HOST, port=settings.APP_PORT, reload=True)

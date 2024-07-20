@@ -32,3 +32,10 @@ def EntityPost(post) -> dict:
     
 def EntinyListPost(posts) -> list:
     return [EntityPost(post) for post in posts]
+
+def EntityFile(file) -> dict:
+    return {
+        "_id": str(file["_id"]),
+        "filename": file["filename"],
+        "data": file["data"],
+    }
